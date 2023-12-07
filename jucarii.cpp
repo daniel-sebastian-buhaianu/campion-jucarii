@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 using namespace std;
 int N, K, P, NS;
 void citesteDateleDeIntrare();
@@ -10,17 +9,47 @@ int main()
 	genereazaPermutari();
 	return 0;
 }
-bool esteSolutie(int* v)
+bool esteSolutie(int* a)
 {
 	// verifica daca exista un subsir crescator
-	// de lungime K in vectorul v
-	// TODO	
+	// de lungime K in vectorul a
+	int lgmax[N], nrmin[N];
+    lgmax[0] = 1, nrmin[0] = a[0];
+    for (int i = 1; i < N; i++)
+    {
+        if (a[i] > nrmin[i-1])
+        {
+            lgmax[i] = lgmax[i-1]+1;
+            nrmin[i] = a[i];
+        }
+        else if (lgmax[i-1] == 1)
+        {
+            lgmax[i] = 1;
+            nrmin[i] = a[i];
+        }
+        else
+        {
+            int j;
+            for (j = i-1; j >= 0 && nrmin[j] > a[i]; j--);
+            if (j >= 0 && lgmax[j]+1 >= lgmax[i-1])
+            {
+                lgmax[i] = lgmax[j]+1;
+                nrmin[i] = a[i];
+            }
+            else
+            {
+                lgmax[i] = lgmax[i-1];
+                nrmin[i] = nrmin[i-1];
+            }
+        }
+    }
+    return lgmax[N-1] >= K;
 }
-void afiseazaSolutie(int* v)
+void afiseazaSolutie(int* a)
 {
 	ofstream g("jucarii.out");
 	for (int i = 0; i < N; i++)
-		g << v[i] << ' ';
+		g << a[i] << ' ';
 	g.close();
 }
 void genereazaPermutari()
